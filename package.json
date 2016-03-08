@@ -1,0 +1,24 @@
+{
+  "name": "forms",
+  "version": "0.0.1",
+  "description": "Simple app for complex forms",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cawerit/forms.git"
+  },
+  "author": "Oskari Noppa & Villeveikko Sula",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Cawerit/forms/issues"
+  },
+  "homepage": "https://github.com/Cawerit/forms#readme",
+  "dependencies": {
+    "jquery": "^2.2.1",
+    "lodash": "^4.6.1",
+    "riot": "^2.3.16"
+  }
+}
