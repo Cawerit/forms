@@ -1,8 +1,8 @@
 var gulp 		= require('gulp'),
 	browserify 	= require('browserify'),
 	fs			= require('fs'),
-	nodemon		= require('nodemon'),
-	livereload	= require('gulp-livereload'),
+	childProc	= require('child_process'),
+	argv		= require('yargs').argv,
 	path		= require('path'),
 	_			= require('lodash');
 
@@ -17,16 +17,36 @@ gulp.task('form-js', function(){
 	return runBuild('form');
 });
 
-gulp.task('serve', ['build'], function(){
-	nodemon({
-		script: 'server.js',
-		ignore: ['bundle.js']
-	})
-	.on('restart', function(){
-		livereload();
-	})
-});
+gulp.task('serve', ['build'], (function(){
 
+	var node;
+
+	function spawn(){
+		console.log('spawning child process');
+		node = childProc.fork('server.js');
+	}
+
+	function onWatch(){
+		console.log('aargs', arguments);
+	}
+
+	return function serve(done){
+		if(node){
+			node.once('exit', spawn);
+			node.kill();
+		} else {
+			spawn();
+			if(argv.watch){
+				var lr = require('gulp-livereload');
+				lr.listen();
+				require('gulp-watch')('./**/*.js')
+					.pipe(lr())
+					.on('end', done);	
+			}
+		}
+	};
+
+}()));
 
 function runBuild(dir){
 	return browserify(dir + '/app.js')
