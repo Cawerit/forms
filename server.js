@@ -14,7 +14,7 @@ router
 
 	.use('/node_modules', express.static(getAbsolute('node_modules')))
 
-	.get('bundle.js', (req, res) => res.sendFile(getAbsolute('/bundle.js')));
+	.get('/bundle.js', (req, res) => res.sendFile(getAbsolute('/bundle.js')));
 
 
 //TODO: might be handeled by some other module
