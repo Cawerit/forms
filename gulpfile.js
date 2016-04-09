@@ -4,62 +4,59 @@ var gulp 		= require('gulp'),
 	childProc	= require('child_process'),
 	argv		= require('yargs').argv,
 	path		= require('path'),
-	wait		= require('gulp-wait');
+	wait		= require('gulp-wait'),
+	livereload  = require('gulp-livereload');
 
-
-gulp.task('build', ['form-js'], function(){
-
-});
-
+gulp.task('build', ['form-js']);
 
 gulp.task('form-js', function(){
 	return runBuild('form');
 });
 
-gulp.task('serve', ['build'], (function(){
+gulp.task('serve', (function(){
+
+	//We'll place the node running the server here
 	var node;
 
-	function spawn(){
-		console.log((node ? 'Restarting' : 'Starting') + ' the server.');
-		node = childProc.fork('server.js');
-	}
+	return function() {
+		function spawn() {
+			console.log((node ? 'Restarting' : 'Starting') + ' the server.');
+			node = childProc.fork('server.js');
+		}
 
-	return function serve(){
-		if(node){
-			restart();
+		if (node) {//This is a restart
+			node.once('exit', spawn);
+			node.kill();//Kill the prev node and restart
+			if(argv.watch){
+				livereload.reload();
+			}
 		} else {
 			spawn();
-			if(argv.watch){
-				var lr = require('gulp-livereload');
-				lr.listen();
-				var watch = require('gulp-watch');
 
-				watch(['server.js', 'api/**/*'], restart)
-					.pipe(wait(1000))//Wait a sec to reload the server before reloading the page
-					.pipe(lr());	
+			gulp.start('build');
 
-				watch(['form/**/*', '!form/bundle.js'], () => runBuild('form'))
-					.pipe(lr());
+			if (argv.watch) {//If --watch was specified, well wait for changes and restart
+				livereload.listen();
+
+				gulp.watch(['server.js', 'api/**/*', './**/server.js'], ['serve']);
+				gulp.watch(['form/**/*', '!form/bundle.js'], ['build']);
 			}
 		}
+	}
 
-		function restart(files){
-			gulp.start('build');
-			node.once('exit', spawn);
-			node.kill();
-		}
-
-	};
-
-}()));
+})());
 
 function runBuild(dir){
-	return browserify(dir + '/app.js')
+	var result = browserify(dir + '/app.js')
 		.transform('babelify', { presets: ['es2015'] })
 		.bundle()
 		.on('error', function(err){
 			console.log(err.toString());
 			this.emit('end');
-		})
-		.pipe(fs.createWriteStream(dir + '/bundle.js'));
+		});
+	if(argv.watch){
+		result = result.pipe(livereload());
+	}
+	result = result.pipe(fs.createWriteStream(dir + '/bundle.js'));
+	return result;
 }
