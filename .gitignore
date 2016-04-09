@@ -35,3 +35,7 @@ node_modules
 # Build results
 bundle.js
 tags.js
+form/templates
+
+# Files containing credentials
+db.js
