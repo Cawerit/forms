@@ -7,10 +7,10 @@ var gulp 		= require('gulp'),
 	wait		= require('gulp-wait'),
 	livereload  = require('gulp-livereload');
 
-gulp.task('build', ['form-js']);
+gulp.task('build', ['public-js']);
 
-gulp.task('form-js', function(){
-	return runBuild('form');
+gulp.task('public-js', function(){
+	return runBuild('public');
 });
 
 gulp.task('serve', (function(){
@@ -38,8 +38,8 @@ gulp.task('serve', (function(){
 			if (argv.watch) {//If --watch was specified, well wait for changes and restart
 				livereload.listen();
 
-				gulp.watch(['server.js', 'api/**/*', './**/server.js'], ['serve']);
-				gulp.watch(['form/**/*', '!form/bundle.js'], ['build']);
+				gulp.watch(['server.js', 'server/**/*.js'], ['serve']);
+				gulp.watch(['public/**/*', '!public/bundle.js'], ['build']);
 			}
 		}
 	}
