@@ -6,17 +6,16 @@ var express = require('express'),
 	path	= require('path'),
 	fs = require('fs'),
 	db = require('./db'),
+	api = require('./server/api.js'),
+	registerParam = require('./server/register-param'),
 	router	= express.Router();
 
 var frontPage = `This is the surveys front page.
 Open <a href="survey/b0b8ac2c-2147-486e-99a8-9f834393f069">a survey</a> to see content.`;
 
+registerParam(router, 'id');
 router
-	.param('id', (req, res, next, id) => {
-		req.id = id;
-		next();
-	})
-
+	.use('/api', api)
 	.get('/', (req, res) => res.send(frontPage))
 	.use('/node_modules', express.static(getAbsolute('node_modules')))
 	.get('/bundle.js', (req, res) => res.sendFile(getAbsolute('public/bundle.js')))

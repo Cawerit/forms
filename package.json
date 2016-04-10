@@ -20,7 +20,10 @@
   },
   "homepage": "https://github.com/Cawerit/forms#readme",
   "dependencies": {
+    "body-parser": "^1.15.0",
+    "busboy": "^0.2.13",
     "cheerio": "^0.20.0",
+    "connect-busboy": "0.0.2",
     "express": "^4.13.4",
     "jquery": "^2.2.1",
     "knex": "^0.10.0",

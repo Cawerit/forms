@@ -16,7 +16,7 @@ module.exports = function (options, html) {
 			}
 			var $ = cheerio.load(baseTemplate);
 			//Add the survey html to the base template
-			$('<textarea id="edit-survey" style="width: 500px; height: 500px;"></textarea>').append(html).appendTo('body');
+			$('<textarea id="edit-survey" style="width: 500px; height: 500px;"></textarea>').val(html).appendTo('body');
 			//Add the title
 			$('title').html(options.title || '');
 

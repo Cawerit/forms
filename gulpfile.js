@@ -39,7 +39,7 @@ gulp.task('serve', (function(){
 				livereload.listen();
 
 				gulp.watch(['server.js', 'server/**/*.js'], ['serve']);
-				gulp.watch(['public/**/*', '!public/bundle.js'], ['build']);
+				gulp.watch(['public/**/*', '!public/bundle.js', '!public/templates/**/*'], ['build']);
 			}
 		}
 	}
