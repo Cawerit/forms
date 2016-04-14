@@ -1,5 +1,6 @@
 var cheerio = require('cheerio'),
 	path = require('path'),
+	fromPromise = require('./from-promise');
 	fs = require('fs');
 /**
  * Compiles the given survey html to a richer version and stores the compiled file in
@@ -9,19 +10,26 @@ var cheerio = require('cheerio'),
  * @returns {Promise}
  */
 module.exports = function (options, html) {
-	return new Promise(function (resolve, reject) {
-		fs.readFile(path.join(global.root.dirname, 'public', 'base-template.html'), 'utf-8', function (err, baseTemplate) {
-			if(err){
-				reject(err);
-				return;
-			}
-			var $ = cheerio.load(baseTemplate);
+	//We need both the base html template and the css for it,
+	//let's load these in parallel
+	var templatePromise = new Promise(function (resolve, reject) {
+		fs.readFile(path.join(global.root.dirname, 'public', 'base-template.html'), 'utf-8', fromPromise(resolve, reject));
+		}),
+		cssPromise = new Promise(function (resolve, reject) {
+			fs.readFile(path.join(global.root.dirname, 'public', 'base-style.css'), 'utf-8', fromPromise(resolve, reject));
+		});
+	
+	//When both have finished loading, we can inject the css to html
+		return Promise.all([templatePromise, cssPromise]).then(function (values) {
+			var baseTemplate = values[0],
+				baseCss = values[1],
+				$ = cheerio.load(baseTemplate);
 			//Add the survey html to the base template
 			$('body').html(html);
 			//Add the title
 			$('title').html(options.title || '');
-
-			resolve($.html());
+			//Add the css
+			$('<style></style>').append(baseCss).appendTo('head');
+			return $.html();
 		});
-	});
 };

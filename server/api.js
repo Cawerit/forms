@@ -19,7 +19,7 @@ router
 	.put('/survey/:id/html', function (req, res) {
 		db.select('template').from('surveys').where('id', req.id).then(function (rows) {
 			if(!rows || rows.length !== 1){
-				res.status(404).send('Not foundd');
+				res.status(404).send('Not found');
 				return;
 			}
 			var templatePath = path.join(global.root.dirname, 'public', 'templates', rows[0].template + '.html');
