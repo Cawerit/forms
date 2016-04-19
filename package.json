@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/Cawerit/forms#readme",
   "dependencies": {
+    "big-integer": "^1.6.15",
     "body-parser": "^1.15.0",
     "busboy": "^0.2.13",
     "cheerio": "^0.20.0",

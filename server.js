@@ -8,10 +8,11 @@ var express = require('express'),
 	db = require('./db'),
 	api = require('./server/api.js'),
 	registerParam = require('./server/register-param'),
+	obfuscateId = require('./server/obfuscate-id'),
 	router	= express.Router();
 
 var frontPage = `This is the surveys front page.
-Open <a href="survey/b0b8ac2c-2147-486e-99a8-9f834393f069">a survey</a> to see content.`;
+Open <a href="survey/${obfuscateId.encode(1)}">a survey</a> to see content.`;
 
 registerParam(router, 'id');
 router
@@ -71,8 +72,8 @@ function notFound(res){
 
 function getSurvey(req, res){
 	return db.select('template', 'name')
-		.from('surveys')
-		.where({ id: req.id })
+		.from('survey_templates')
+		.where({ id: obfuscateId.decode(req.id) })
 		.then(function(rows){//Error handling if we don't find the survey
 			if (!rows || rows.length !== 1) {
 				//We should only have one row when we query with id, otherwise send error
