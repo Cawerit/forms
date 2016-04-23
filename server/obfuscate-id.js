@@ -33,7 +33,7 @@ module.exports = {
 	 * @param {string|number} number Integer between (0, TOP_VALUE) (both exclusive).
 	 */
 	encode: function (number) {
-		return bigInt(number).times(SEED).mod(TOP_VALUE);
+		return bigInt(number).times(SEED).mod(TOP_VALUE).toString();
 	},
 	/**
 	 * Transforms the previously encoded value back to its original value, assuming that

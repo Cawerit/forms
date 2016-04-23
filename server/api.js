@@ -3,12 +3,13 @@ var express = require('express'),
 	db = global.root.require('db.js'),
 	fs = require('fs'),
 	busboy = require('connect-busboy'),
-	registerParam = require('./register-param'),
+	registerIdParam = require('./register-id-param'),
 //The api section will be a self-contained, independent router
 	router = express.Router();
 
 
-registerParam(router, 'id');
+registerIdParam(router);
+
 router
 	.use(busboy())
 	/**
@@ -17,25 +18,34 @@ router
 	 * Expects the template to be sent as multipart/form-data as the templates can get quite large
 	 */
 	.put('/survey/:id/html', function (req, res) {
-		db.select('template').from('surveys').where('id', req.id).then(function (rows) {
-			if(!rows || rows.length !== 1){
-				res.status(404).send('Not found');
-				return;
-			}
-			var templatePath = path.join(global.root.dirname, 'templates', rows[0].template + '.tag');
-			//Receive the multipart/form-data the client just sent us
-			//Using the busboy library here to parse the upload content, see {@link https://github.com/mscdex/busboy}
-			req.busboy.on('file', function(fieldname, file, filename, encoding, mimetype){
-				file.pipe(fs.createWriteStream(templatePath));
-			});
 
-			req.busboy.on('finish', function () {
-				res.set('Connection', 'close');
+		db.insert({
+			survey: req.id + ''
+		}, 'id')
+			.into('templates')
+			.then(function (rows) {
 				res.status(200).end();
 			});
 
-			req.pipe(req.busboy);
-		});
+		// db.select('template').from('surveys').where('id', req.id).then(function (rows) {
+		// 	if(!rows || rows.length !== 1){
+		// 		res.status(404).send('Not found');
+		// 		return;
+		// 	}
+		// 	var templatePath = path.join(global.root.dirname, 'templates', rows[0].template + '.tag');
+		// 	//Receive the multipart/form-data the client just sent us
+		// 	//Using the busboy library here to parse the upload content, see {@link https://github.com/mscdex/busboy}
+		// 	req.busboy.on('file', function(fieldname, file, filename, encoding, mimetype){
+		// 		file.pipe(fs.createWriteStream(templatePath));
+		// 	});
+		//
+		// 	req.busboy.on('finish', function () {
+		// 		res.set('Connection', 'close');
+		// 		res.status(200).end();
+		// 	});
+		//
+		// 	req.pipe(req.busboy);
+		// });
 	});
 
 

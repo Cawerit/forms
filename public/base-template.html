@@ -7,11 +7,15 @@
     <script src="node_modules/jquery/dist/jquery.min.js"></script>
     <script src="public/survey-bundle.js"></script>
 
+    <link rel="stylesheet" type="text/css" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+
 </head>
 <body>
 
-    <!-- Riot will mount the survey here -->
-    <survey></survey>
+    <form id="survey-container">
+        <!-- Riot will mount the survey here -->
+        <survey></survey>
+    </form>
     <!-- template compiler will inject the template code here when this page is requested -->
     <script id="template-container"></script>
 

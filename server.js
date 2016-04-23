@@ -2,19 +2,21 @@
 //Initialize the global root variable 
 require('./root.js');
 
-var express = require('express'),
-	path	= require('path'),
-	fs = require('fs'),
-	db = require('./db'),
-	api = require('./server/api.js'),
-	registerParam = require('./server/register-param'),
+var express     = require('express'),
+	path	    = require('path'),
+	fs          = require('fs'),
+	db          = require('./db'),
+	api         = require('./server/api.js'),
+	registerIdParam = require('./server/register-id-param'),
 	obfuscateId = require('./server/obfuscate-id'),
-	router	= express.Router();
+	saveTemplateError = require('./server/save-template-error'),
+	router	    = express.Router();
 
 var frontPage = `This is the surveys front page.
 Open <a href="survey/${obfuscateId.encode(1)}">a survey</a> to see content.`;
 
-registerParam(router, 'id');
+registerIdParam(router);
+
 router
 	.use('/api', api)
 	.get('/', (req, res) => res.send(frontPage))
@@ -48,6 +50,7 @@ function sendForm(res, options, editing){
 	fs.readFile(baseTemplate, 'utf-8', function(err, fileText){
 		if(err){
 			notFound(res);
+			saveTemplateError(options.template);
 		} else {
 			var compiler = editing ? './server/compile-editor' : './server/compile-template';
 			require(compiler)(options, fileText)
@@ -73,7 +76,7 @@ function notFound(res){
 function getSurvey(req, res){
 	return db.select('template', 'name')
 		.from('survey_templates')
-		.where({ id: obfuscateId.decode(req.id) })
+		.where({ id: req.id })
 		.then(function(rows){//Error handling if we don't find the survey
 			if (!rows || rows.length !== 1) {
 				//We should only have one row when we query with id, otherwise send error

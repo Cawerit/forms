@@ -22,6 +22,7 @@
   "dependencies": {
     "big-integer": "^1.6.15",
     "body-parser": "^1.15.0",
+    "bootstrap": "^3.3.6",
     "busboy": "^0.2.13",
     "cheerio": "^0.20.0",
     "connect-busboy": "0.0.2",
