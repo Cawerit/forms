@@ -3,8 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <title></title>
+    <base href="/">
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="node_modules/riot/riot+compiler.js"></script>
+    <script src="public/survey-bundle.js"></script>
+    <script type="riot/tag" src="public/tags.tag"></script>
+
 </head>
 <body>
+
+    <!-- Riot will mount the survey here -->
+    <survey></survey>
+    <!-- template compiler will inject the template code here when this page is requested -->
+    <script type="riot/tag" id="template-container"></script>
 
 </body>
 </html>

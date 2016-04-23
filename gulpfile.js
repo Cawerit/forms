@@ -5,12 +5,17 @@ var gulp 		= require('gulp'),
 	argv		= require('yargs').argv,
 	path		= require('path'),
 	wait		= require('gulp-wait'),
+	gulpFn      = require('gulp-fn'),
 	livereload  = require('gulp-livereload');
 
-gulp.task('build', ['public-js']);
+gulp.task('build', ['app-js', 'survey-js']);
 
-gulp.task('public-js', function(){
-	return runBuild('public');
+gulp.task('app-js', function(){
+	return runBuild('public/app');
+});
+
+gulp.task('survey-js', function () {
+	return runBuild('public/survey');
 });
 
 gulp.task('serve', (function(){
@@ -28,7 +33,7 @@ gulp.task('serve', (function(){
 			node.once('exit', spawn);
 			node.kill();//Kill the prev node and restart
 			if(argv.watch){
-				livereload.reload();
+				setTimeout(() => livereload.reload(), 1000);//We need to wait a sec to let the server restart
 			}
 		} else {
 			spawn();
@@ -39,24 +44,31 @@ gulp.task('serve', (function(){
 				livereload.listen();
 
 				gulp.watch(['server.js', 'server/**/*.js'], ['serve']);
-				gulp.watch(['public/**/*', '!public/bundle.js', '!public/templates/**/*'], ['build']);
+				gulp.watch(['public/**/*', '!app-bundle.js', '!survey-bundle.js', '!public/templates/**/*'], ['build']);
 			}
 		}
 	}
 
 })());
 
-function runBuild(dir){
-	var result = browserify(dir + '/app.js')
+function runBuild(filename){
+	var bundledFile = filename + '-bundle.js';
+	var result = browserify(filename + '.js')
 		.transform('babelify', { presets: ['es2015'] })
-		.bundle()
-		.on('error', function(err){
+		.bundle();
+
+	if(argv.watch){
+		result.pipe(gulpFn(function () {
+			livereload.changed(bundledFile);
+		}));
+	}
+
+	result = result.
+		on('error', function (err) {
 			console.log(err.toString());
 			this.emit('end');
-		});
-	if(argv.watch){
-		result = result.pipe(livereload());
-	}
-	result = result.pipe(fs.createWriteStream(dir + '/bundle.js'));
+		})
+		.pipe(fs.createWriteStream(bundledFile));
+
 	return result;
 }

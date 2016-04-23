@@ -22,7 +22,7 @@ router
 				res.status(404).send('Not found');
 				return;
 			}
-			var templatePath = path.join(global.root.dirname, 'public', 'templates', rows[0].template + '.html');
+			var templatePath = path.join(global.root.dirname, 'templates', rows[0].template + '.tag');
 			//Receive the multipart/form-data the client just sent us
 			//Using the busboy library here to parse the upload content, see {@link https://github.com/mscdex/busboy}
 			req.busboy.on('file', function(fieldname, file, filename, encoding, mimetype){

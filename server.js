@@ -19,7 +19,7 @@ router
 	.use('/api', api)
 	.get('/', (req, res) => res.send(frontPage))
 	.use('/node_modules', express.static(getAbsolute('node_modules')))
-	.get('/bundle.js', (req, res) => res.sendFile(getAbsolute('public/bundle.js')))
+	.use('/public', express.static(getAbsolute('public')))
 
 	//Pages like survey/id return the compiled survey
 	.get('/survey/:id', (req, res) => {
@@ -44,7 +44,7 @@ router
 function sendForm(res, options, editing){
 	var templateName = options.template;
 	//In that case the template will be located at public/templates/<unique filename>
-	var baseTemplate = path.join(__dirname, 'public', 'templates', templateName + '.html');
+	var baseTemplate = path.join(__dirname, 'templates', templateName + '.tag');
 	fs.readFile(baseTemplate, 'utf-8', function(err, fileText){
 		if(err){
 			notFound(res);
