@@ -6,6 +6,7 @@ var gulp 		= require('gulp'),
 	path		= require('path'),
 	wait		= require('gulp-wait'),
 	gulpFn      = require('gulp-fn'),
+	riotify     = require('riotify'),
 	livereload  = require('gulp-livereload');
 
 gulp.task('build', ['app-js', 'survey-js']);
@@ -16,6 +17,20 @@ gulp.task('app-js', function(){
 
 gulp.task('survey-js', function () {
 	return runBuild('public/survey');
+});
+
+gulp.task('components', function () {
+	var bundledFile = 'public/components-bundle.js';
+	var result = browserify('components/**/*.tag')
+		.transform(riotify)
+		.bundle();
+
+	result.pipe(wait(1000))
+		.pipe(gulpFn(function () {
+			livereload.changed(bundledFile);
+		}));
+
+	return result.pipe(fs.createWriteStream(bundledFile));
 });
 
 gulp.task('serve', (function(){
@@ -44,7 +59,7 @@ gulp.task('serve', (function(){
 				livereload.listen();
 
 				gulp.watch(['server.js', 'server/**/*.js'], ['serve']);
-				gulp.watch(['public/**/*', '!app-bundle.js', '!survey-bundle.js', '!public/templates/**/*'], ['build']);
+				gulp.watch(['public/**/*', '!public/app-bundle.js', '!public/survey-bundle.js'], ['build']);
 			}
 		}
 	}
@@ -55,12 +70,15 @@ function runBuild(filename){
 	var bundledFile = filename + '-bundle.js';
 	var result = browserify(filename + '.js')
 		.transform('babelify', { presets: ['es2015'] })
+		.transform(riotify)
 		.bundle();
 
 	if(argv.watch){
-		result.pipe(gulpFn(function () {
-			livereload.changed(bundledFile);
-		}));
+		result
+			.pipe(wait(1000))
+			.pipe(gulpFn(function () {
+				livereload.changed(bundledFile);
+			}));
 	}
 
 	result = result.

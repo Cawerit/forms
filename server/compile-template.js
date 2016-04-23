@@ -1,6 +1,7 @@
 var cheerio = require('cheerio'),
 	path = require('path'),
 	fromPromise = require('./from-promise'),
+	riot = require('riot'),
 	fs = require('fs');
 /**
  * Compiles the given survey html to a richer version and stores the compiled file in
@@ -25,10 +26,17 @@ module.exports = function (options, html) {
 				baseCss = values[1],
 				$ = cheerio.load(baseTemplate);
 
+			var compiledTemplate;
+			try {
+				compiledTemplate = riot.compile(html);
+			} catch (err) {
+				return Promise.reject(err);
+			}
+
 			// var wrapper = $('<survey></survey>');
 			// wrapper.html(html);
 			//Add the survey html to the base template
-			$('#template-container').html(html);
+			$('#template-container').html(compiledTemplate);
 			//Add the title
 			$('title').html(options.title || '');
 			//Add the css
