@@ -5,10 +5,11 @@ var registerParam   = require('./register-param'),
  * Registers an id parameter for the given router.
  * @see register-param for more info
  * @param router
+ * @param {string=} [paramName=id]
  * @returns {express.Router}
  */
-module.exports = function (router) {
-	return registerParam(router, 'id', {
+module.exports = function (router, paramName) {
+	return registerParam(router, paramName || 'id', {
 		transform: 	obfuscateId.decode,
 		validate: isInt
 	});
