@@ -9,7 +9,8 @@ var express     = require('express'),
 	api         = require('./server/api.js'),
 	registerIdParam = require('./server/register-id-param'),
 	obfuscateId = require('./server/obfuscate-id'),
-	saveTemplateError = require('./server/save-template-error'),
+	templates   = require('./server/s3/templates'),
+	convert     = require('./server/convert'),
 	router	    = express.Router();
 
 var frontPage = `This is the surveys front page.
@@ -45,23 +46,40 @@ router
 
 function sendForm(res, options, editing){
 	var templateName = options.template;
-	//In that case the template will be located at public/templates/<unique filename>
-	var baseTemplate = path.join(__dirname, 'templates', templateName + '.tag');
-	fs.readFile(baseTemplate, 'utf-8', function(err, fileText){
-		if(err){
-			notFound(res);
-			saveTemplateError(options.template);
-		} else {
+	templates.get(templateName)
+		.then(function(data){
+			var fileText = data.Body.toString('utf-8');
+
 			var compiler = editing ? './server/compile-editor' : './server/compile-template';
 			require(compiler)(options, fileText)
 				.then(
 					result => res.send(result),
 					err => {
-					console.error(err);
-					res.status(500).send('Internal Server Error');
-				});
-		}
+						console.error(err);
+						res.status(500).send('Internal Server Error');
+					});
+	}, err => {
+		console.log(err);
+		res.status(500).send('Internal Server Error');
 	});
+
+	//In that case the template will be located at public/templates/<unique filename>
+	// var baseTemplate = path.join(__dirname, 'templates', templateName + '.tag');
+	// fs.readFile(baseTemplate, 'utf-8', function(err, fileText){
+	// 	if(err){
+	// 		notFound(res);
+	// 		saveTemplateError(options.template);
+	// 	} else {
+	// 		var compiler = editing ? './server/compile-editor' : './server/compile-template';
+	// 		require(compiler)(options, fileText)
+	// 			.then(
+	// 				result => res.send(result),
+	// 				err => {
+	// 				console.error(err);
+	// 				res.status(500).send('Internal Server Error');
+	// 			});
+	// 	}
+	// });
 }
 
 //TODO: might be handled by some other module

@@ -39,4 +39,4 @@ tags.js
 public/templates
 
 # Files containing credentials
-db.js
+credentials

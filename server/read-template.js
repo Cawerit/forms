@@ -2,7 +2,9 @@ var fs = require('fs'),
 	path = require('path'),
 	fromPromise = require('./from-promise');
 
-
+/**
+ * @deprecated 
+ */
 module.exports = function(templateId){
 
 	return new Promise(function (resolve, reject) {

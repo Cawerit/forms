@@ -10,6 +10,8 @@ var express         = require('express'),
 	obfuscateId     = require('./obfuscate-id'),
 	registerIdParam = require('./register-id-param'),
 	readTemplate    = require('./read-template'),
+	convert         = require('./convert'),
+	templates       = require('./s3/templates'),
 //The api section will be a self-contained, independent router
 	router = express.Router();
 
@@ -38,19 +40,23 @@ router
 				}
 
 				var templateId = rows[0];
-				var templatePath = path.join(global.root.dirname, 'templates', templateId + '.tag');
+				var fileUploadPromises = [];
 				//Receive the multipart/form-data the client just sent us
 				//Using the busboy library here to parse the upload content, see {@link https://github.com/mscdex/busboy}
 				req.busboy.on('file', function(fieldname, file, filename, encoding, mimetype){
-					file.pipe(fs.createWriteStream(templatePath));
+					var fileUpload = convert.streamToBuffer(file)
+						.then(buffer => templates.put(templateId, buffer));
+					fileUploadPromises.push(fileUpload);
+					fileUpload.catch(err => console.log(err));
+					//file.pipe(fs.createWriteStream(templatePath));
 				});
 
 				req.busboy.on('finish', function () {
 					res.set('Connection', 'close');
-					res.status(200).send({
+					Promise.all(fileUploadPromises).then(() => res.status(200).send({
 						id: (req.id+''),
 						template: obfuscateId.encode(templateId)
-					});
+					}), err => res.status(500).send({ error: 'Internal Server Error'}) );
 				});
 				req.pipe(req.busboy);
 

@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/Cawerit/forms#readme",
   "dependencies": {
+    "aws-sdk": "^2.3.7",
     "big-integer": "^1.6.15",
     "body-parser": "^1.15.0",
     "bootstrap": "^3.3.6",
