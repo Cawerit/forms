@@ -1,3 +1,6 @@
+
+import './routes';
+
 //Quick and dirty save form function
 window.saveForm = function () {
 

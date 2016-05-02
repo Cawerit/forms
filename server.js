@@ -13,8 +13,11 @@ var express     = require('express'),
 	convert     = require('./server/convert'),
 	router	    = express.Router();
 
-var frontPage = `This is the surveys front page.
-Open <a href="survey/${obfuscateId.encode(1)}">a survey</a> to see content.`;
+const frontPage = `This is the surveys front page.
+Open <a href="forms/${obfuscateId.encode(1)}">a survey</a> to see content.`;
+
+const mainApp =
+	(req, res) => res.status(200).sendFile(path.join(global.root.dirname, 'public', 'index.html'));
 
 registerIdParam(router);
 
@@ -24,8 +27,15 @@ router
 	.use('/node_modules', express.static(getAbsolute('node_modules')))
 	.use('/public', express.static(getAbsolute('public')))
 
-	//Pages like survey/id return the compiled survey
-	.get('/survey/:id', (req, res) => {
+	
+	/////////////////
+	// Note: the order of the following path definitions is significant due to the way express js resolves routes. Change with caution.
+	/////////////////
+	
+	.get('/forms/create', mainApp)
+
+	//Pages like forms/id return the server-compiled survey
+	.get('/forms/:id', (req, res) => {
 		getSurvey(req, res)
 			.then(function(row) {
 				sendForm(res, {
@@ -34,20 +44,13 @@ router
 				});
 			});
 	})
-	.get('/survey/:id/edit', (req, res) => {
-		getSurvey(req, res)
-			.then(function (row){
-				sendForm(res, {
-					template: row.template,
-					title: row.name
-				}, true);
-			});
-	});
 
-function sendForm(res, options, editing){
+	.get('/forms/**/*', mainApp);
+
+function sendForm(res, options, editing) {
 	var templateName = options.template;
 	templates.get(templateName)
-		.then(function(data){
+		.then(function (data) {
 			var fileText = data.Body.toString('utf-8');
 
 			var compiler = editing ? './server/compile-editor' : './server/compile-template';
@@ -58,28 +61,10 @@ function sendForm(res, options, editing){
 						console.error(err);
 						res.status(500).send('Internal Server Error');
 					});
-	}, err => {
-		console.log(err);
-		res.status(500).send('Internal Server Error');
-	});
-
-	//In that case the template will be located at public/templates/<unique filename>
-	// var baseTemplate = path.join(__dirname, 'templates', templateName + '.tag');
-	// fs.readFile(baseTemplate, 'utf-8', function(err, fileText){
-	// 	if(err){
-	// 		notFound(res);
-	// 		saveTemplateError(options.template);
-	// 	} else {
-	// 		var compiler = editing ? './server/compile-editor' : './server/compile-template';
-	// 		require(compiler)(options, fileText)
-	// 			.then(
-	// 				result => res.send(result),
-	// 				err => {
-	// 				console.error(err);
-	// 				res.status(500).send('Internal Server Error');
-	// 			});
-	// 	}
-	// });
+		}, err => {
+			console.log(err);
+			res.status(500).send('Internal Server Error');
+		});
 }
 
 //TODO: might be handled by some other module

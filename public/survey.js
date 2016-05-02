@@ -16,7 +16,7 @@ $(function () {
 		var obj = toJson($('form'));
 
 		$.post({
-			url: '/api/surveys/' + surveyId + '/answers',
+			url: '/api/forms/' + surveyId + '/answers',
 			data: JSON.stringify(obj),
 			dataType: 'json',
 			contentType: 'application/json; charset=utf-8',

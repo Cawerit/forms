@@ -27,7 +27,7 @@ router
 	 * Updates the given survey template.
 	 * Expects the template to be sent as multipart/form-data as the templates can get quite large
 	 */
-	.post('/surveys/:id/templates', function (req, res) {
+	.post('/forms/:id/templates', function (req, res) {
 		db.insert({//Insert new template row to db
 			survey: req.id + ''
 		}, 'id')//return its id
@@ -48,12 +48,11 @@ router
 						.then(buffer => templates.put(templateId, buffer));
 					fileUploadPromises.push(fileUpload);
 					fileUpload.catch(err => console.log(err));
-					//file.pipe(fs.createWriteStream(templatePath));
 				});
 
 				req.busboy.on('finish', function () {
 					res.set('Connection', 'close');
-					Promise.all(fileUploadPromises).then(() => res.status(200).send({
+					Promise.all(fileUploadPromises).then(() => res.status(201).send({
 						id: (req.id+''),
 						template: obfuscateId.encode(templateId)
 					}), err => res.status(500).send({ error: 'Internal Server Error'}) );
@@ -62,7 +61,7 @@ router
 
 			}, () => notFound(res));
 	})
-	.post('/surveys/:id/answers', function (req, res) {
+	.post('/forms/:id/answers', function (req, res) {
 
 		var id = req.id,
 			answers = req.body;
@@ -111,7 +110,7 @@ router
 				});
 
 				db.insert(inserts).into('answers').then(function(){
-					res.status(200).send(inserts);
+					res.status(201).send(inserts);
 				});
 
 			});
@@ -122,20 +121,6 @@ router
 			})
 
 	});
-
-
-	// .put('/survey/:id/:templateId/questions', function (req, res) {
-	//
-	// 	var id = (req.id + ''),
-	// 		templateId = (req.templateId + ''),
-	// 		questions = req.body;//the bodParser plugin will parse the json for us
-	//
-	// 	if(!questions || !(questions.constructor === Array) || !questions.length) {
-	// 		res.status(400).send({ error: `Request did'n contain a list of questions.` });
-	// 		return;
-	// 	}
-	// });
-	
 
 function notFound(res){
 	res.status(404).send('Not found');
