@@ -40,7 +40,7 @@ router
 	.get('/forms/:id', (req, res) => {
 		getSurvey(req, res)
 			.then(function(row) {
-				var lastModified = Math.min(buildInfo.time, (row.created || new Date()).getTime()) + '',
+				var lastModified = Math.max(buildInfo.time, (row.created || new Date()).getTime()) + '',
 					browserCache = req.get('If-Modified-Since');
 
 				res.set('Last-Modified', lastModified);
