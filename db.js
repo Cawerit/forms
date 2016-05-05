@@ -7,5 +7,8 @@ var config = require('./credentials/rds.credentials.json');
 
 module.exports = knex({
 	client: 'mysql',
-	connection: config
+	connection: config,
+	pool: {
+		min: 0
+	}
 });

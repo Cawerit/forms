@@ -22,6 +22,28 @@ registerIdParam(router, 'templateId');
 router
 	.use(busboy())
 	.use(bodyParser.json())
+
+	.post('/forms', function(req, res) {
+		db.insert({
+
+		}, 'id')
+			.into('surveys')
+			.then(function (rows) {
+				if(!rows || rows.length !== 1){
+					notFound(res);
+					return;
+				}
+
+				res.status(201).send({
+					id: obfuscateId.encode(rows[0])
+				});
+			})
+			.catch(err => {
+				console.log(err);
+				res.status(500).send({ error: 'Internal Server Error' });
+			});
+	})
+
 	/**
 	 * Handler for PUT calls to api/survey/<id>/html
 	 * Updates the given survey template.
@@ -53,7 +75,7 @@ router
 				req.busboy.on('finish', function () {
 					res.set('Connection', 'close');
 					Promise.all(fileUploadPromises).then(() => res.status(201).send({
-						id: (req.id+''),
+						id: obfuscateId.encode(req.id+''),
 						template: obfuscateId.encode(templateId)
 					}), err => res.status(500).send({ error: 'Internal Server Error'}) );
 				});

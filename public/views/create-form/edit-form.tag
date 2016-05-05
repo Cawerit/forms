@@ -1,6 +1,9 @@
 <edit-form>
 
-    <textarea class="content"></textarea>
+    <div>
+        <textarea class="content"></textarea>
+        <button onclick={save}>Tallenna</button>
+    </div>
 
     <script>
         if(this.opts.promise){
@@ -11,12 +14,20 @@
                 });
             });
         }
+
+        save() {
+            var content = $('.content', this.root).val();
+            if(this.opts.save) this.opts.save(content);
+            else {
+
+            }
+        }
+
     </script>
-    <style>
+    <style scoped>
         textarea {
             width: 50%;
-            height: 80%;
-            position: absolute;
+            height: 400px;
         }
     </style>
 

@@ -20,6 +20,4 @@ window.saveForm = function () {
 	req.open('POST', 'api/surveys/' + id + '/templates');
 	req.send(formData);
 
-	console.log('Uploading', content);
-
 };

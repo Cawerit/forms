@@ -11,6 +11,26 @@
     <script type="text/javascript" src="node_modules/jquery/dist/jquery.js"></script>
     <script type="text/javascript" src="node_modules/riot/riot.js"></script>
 
+    <script type="text/javascript">
+        (function () {
+            ///////////////////////////////////////////
+            // Require only the polyfills we need
+            ///////////////////////////////////////////
+
+            if(typeof Promise !== 'function') {
+                document.write(getScriptTag('es6-promise/dist/es6-promise.js'));
+            }
+
+
+            function getScriptTag(src){
+                var res = '<script type="text/javascript" src="node_modules/' + src + '">';
+                res += '<' + '/' + 'script' + '>';
+                return res;
+            }
+
+        })();
+    </script>
+
       <!-- The bundled app -->
     <script type="text/javascript" src="public/app-bundle.js"></script>
   </head>
