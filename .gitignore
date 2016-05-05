@@ -37,6 +37,7 @@ app-bundle.js
 survey-bundle.js
 tags.js
 public/templates
+build.info.json
 
 # Files containing credentials
 credentials

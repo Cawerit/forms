@@ -9,7 +9,7 @@ var gulp 		= require('gulp'),
 	riotify     = require('riotify'),
 	livereload  = require('gulp-livereload');
 
-gulp.task('build', ['app-js', 'survey-js']);
+gulp.task('build', ['app-js', 'survey-js', 'build-info']);
 
 gulp.task('app-js', function(){
 	return runBuild('public/app');
@@ -65,6 +65,13 @@ gulp.task('serve', (function(){
 	}
 
 })());
+
+gulp.task('build-info', function(done){
+	var data = {
+		time: new Date().getTime()
+	};
+	fs.writeFile('build.info.json', JSON.stringify(data), done);
+});
 
 function runBuild(filename){
 	var bundledFile = filename + '-bundle.js';

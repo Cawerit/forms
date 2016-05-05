@@ -25,7 +25,6 @@ function saveForm(template){
 			dataType: 'json'
 		}).then(result => {
 			var id = result.id;
-			console.log('save', id);
 			return editForm(id, template)
 				.then(resolve, reject);
 		}, reject);
