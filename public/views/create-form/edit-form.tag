@@ -6,10 +6,10 @@
     </div>
 
     <script>
-        if(this.opts.promise){
+        if(this.opts.content){
             this.on('mount', function(){
                 var vm = this;
-                vm.opts.promise.then(function(template){
+                vm.opts.content.then(function(template){
                     $('.content', vm.root).val(template);
                 });
             });
@@ -18,9 +18,6 @@
         save() {
             var content = $('.content', this.root).val();
             if(this.opts.save) this.opts.save(content);
-            else {
-
-            }
         }
 
     </script>

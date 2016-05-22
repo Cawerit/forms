@@ -11,6 +11,8 @@ var express         = require('express'),
 	registerIdParam = require('./register-id-param'),
 	readTemplate    = require('./read-template'),
 	convert         = require('./convert'),
+	onError         = require('./response-handlers/generic-error-handler'),
+	takeResult      = require('./response-handlers/take'),
 	templates       = require('./s3/templates'),
 //The api section will be a self-contained, independent router
 	router = express.Router();
@@ -42,6 +44,16 @@ router
 				console.log(err);
 				res.status(500).send({ error: 'Internal Server Error' });
 			});
+	})
+		
+	.get('/forms/:id', function(req, res) {
+		getTemplate(req.id)
+			.then(takeResult.first.template)
+			.then(templates.get)
+			.then(takeResult.bodyToString)
+			.then(function (content) {
+				res.status(200).send(content);
+			}, onError(res));
 	})
 
 	/**
@@ -95,7 +107,7 @@ router
 
 		var templateId;
 		//Read the survey template. We need to check that all the necessary answers are there
-		db.select('template').from('survey_templates').where({ id: id }).then(function (rows) {
+		getTemplate(id).then(function (rows) {
 			if(rows && rows.length === 1) {
 				templateId = rows[0].template;
 				return readTemplate(templateId);
@@ -143,6 +155,10 @@ router
 			})
 
 	});
+
+function getTemplate(id) {
+	return db.select('template').from('survey_templates').where({ id: id });
+}
 
 function notFound(res){
 	res.status(404).send('Not found');

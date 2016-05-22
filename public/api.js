@@ -8,12 +8,22 @@ export default {
 		post: saveForm
 	},
 	template: {
-		post: editForm
+		post: editForm,
+		get: getForm
 	},
 	error: {
 		COULD_NOT_PARSE_RESPONSE : COULD_NOT_PARSE_RESPONSE_ERROR
 	}
 };
+
+function getForm(templateId) {
+	return new Promise((resolve, reject) => {
+		$.ajax({
+			method: 'GET',
+			url: `${FORMS_BASE}/${templateId}`
+		}).then(resolve, reject);
+	});
+}
 
 
 function saveForm(template){

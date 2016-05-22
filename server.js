@@ -40,7 +40,7 @@ router
 	.get('/forms/:id', (req, res) => {
 		getSurvey(req, res)
 			.then(function(row) {
-				var lastModified = Math.max(buildInfo.time, (row.created || new Date()).getTime()) + '',
+				var lastModified = (row.created || new Date()).getTime() + '',
 					browserCache = req.get('If-Modified-Since');
 
 				res.set('Last-Modified', lastModified);
@@ -104,7 +104,7 @@ function getSurvey(req, res){
 		'Max-Age': 0
 	});
 
-	return db.select('template', 'name', 'created'/*knex.raw(`round(date_part('epoch', created))`)*/)
+	return db.select('template', 'name', 'created')
 		.from('survey_templates')
 		.where({ id: req.id })
 		.then(function(rows){//Error handling if we don't find the survey
