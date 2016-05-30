@@ -56,7 +56,8 @@ module.exports = {
 	 * @returns {Promise.<*>}
 	 */
 	saveError: function(templateId){
-		if(!templateId || typeof templateId !== 'string') {
+		var type = typeof templateId;
+		if(type !== 'string' && type !== 'number') {
 			return Promise.reject(new Error(templateId + ' is not a valid template id'));
 		}
 		return db('templates').where({
@@ -64,7 +65,9 @@ module.exports = {
 		}).update({
 			found_error: db.fn.now()
 		}).then(function () {
-			console.log('Saved error to db');
+			console.log('Reported error for template ' + templateId);
+		}, function(err) {
+			console.log('Could not report error for template ' + templateId + ' due to error', err);
 		});
 	}
 

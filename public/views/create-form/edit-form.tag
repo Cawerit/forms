@@ -11,7 +11,7 @@
             var vm = this,
                 id = vm.getId();
 
-            var editor = ace.edit(id);
+            var editor = this.editor = ace.edit(id);
             editor.setTheme('ace/theme/dawn');
             editor.getSession().setMode('ace/mode/jsx');
 
@@ -26,7 +26,7 @@
         });
 
         save() {
-            var content = $('.content', this.root).val();
+            var content = this.editor.getValue();
             if(this.opts.save) this.opts.save(content);
         }
 

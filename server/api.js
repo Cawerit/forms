@@ -47,13 +47,18 @@ router
 	})
 		
 	.get('/forms/:id', function(req, res) {
+		var templateId;
 		getTemplate(req.id)
-			.then(takeResult.first.template)
+			.then(res => (templateId = takeResult.first.template(res)))
 			.then(templates.get)
 			.then(takeResult.bodyToString)
 			.then(function (content) {
 				res.status(200).send(content);
-			}, onError(res));
+			}, err => {
+				console.log('Errr', templateId);
+				templates.saveError(templateId);
+				onError(res)(err);
+			});
 	})
 
 	/**
