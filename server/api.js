@@ -112,16 +112,13 @@ router
 
 		var templateId;
 		//Read the survey template. We need to check that all the necessary answers are there
-		getTemplate(id).then(function (rows) {
-			if(rows && rows.length === 1) {
-				templateId = rows[0].template;
-				return readTemplate(templateId);
-			} else {
-				var msg = 'No templates found for survey ' + obfuscateId.encode(id);
-				res.status(404).send({ error: msg });
-				return Promise.reject(new Error(msg));
-			}
-		}).then(function (template) {
+		getTemplate(id)
+		.then(takeResult.first.template)
+		.then(_templateId => {
+			templateId = _templateId;
+			return templates.get(_templateId);
+		})
+		.then(function (template) {
 
 			var $ = cheerio.load(template),
 				inputs = inputParser($('survey'), $);
