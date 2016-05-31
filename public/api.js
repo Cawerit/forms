@@ -1,6 +1,6 @@
 
 
-const FORMS_BASE = 'api/forms',
+const FORMS_BASE = '/api/forms',
 	COULD_NOT_PARSE_RESPONSE_ERROR = 'The response JSON could not be parsed';
 
 export default {

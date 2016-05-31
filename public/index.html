@@ -4,11 +4,9 @@
     <meta charset="UTF-8">
     <title>Forms</title>
 
-    <base href="/">
-
     <!-- 3rd party -->
-    <script type="text/javascript" src="node_modules/jquery/dist/jquery.js"></script>
-    <script type="text/javascript" src="node_modules/ace-builds/src-min/ace.js"></script>
+    <script type="text/javascript" src="/node_modules/jquery/dist/jquery.js"></script>
+    <script type="text/javascript" src="/node_modules/ace-builds/src-min/ace.js"></script>
 
     <script type="text/javascript">
         (function () {
@@ -22,7 +20,7 @@
 
 
             function getScriptTag(src){
-                var res = '<script type="text/javascript" src="node_modules/' + src + '">';
+                var res = '<script type="text/javascript" src="/node_modules/' + src + '">';
                 res += '<' + '/' + 'script' + '>';
                 return res;
             }
@@ -31,7 +29,7 @@
     </script>
 
       <!-- The bundled app -->
-    <script type="text/javascript" src="public/app-bundle.js"></script>
+    <script type="text/javascript" src="/public/app-bundle.js"></script>
   </head>
   <body>
 

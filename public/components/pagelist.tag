@@ -1,29 +1,42 @@
 <pagelist>
     <div class="wrapper">
-        <span each={ pages }>
-            <button onclick={ changePage.bind(this, number) } >{number}</button>
-        </span>
+        <ul class="pagination">
+            <li each={ pages } class={ getClass(number) }>
+                <a href={ '?page=' + number }>{number}</a>
+            </li>
+        </ul>
     </div>
 
     <script>
         this.pages = [];
-        var i = this.opts.min || 1,
-            n = this.opts.max || 1;
+        this.page = 1;
+        
+        var vm = this,
+            i = (vm.opts.min && parseInt(vm.opts.min, 10)) || 1,
+            n = (vm.opts.max && parseInt(vm.opts.max, 10)) || 1;
+        
         while(i <= n){
-            this.pages.push({
+            vm.pages.push({
                 number: i
             });
             i++;
         }
 
-        changePage(number) {
-            riot.route(location.pathname + '?page=' + number);
+        riot.route(function(collection, id, action){
+            var q = riot.route.query();
+            vm.page = parseInt(q.page || 1, 10);
+            vm.update();
+        });
+
+        getClass(number) {
+            return vm.page === number ? 'active' : '';
         }
+
     </script>
 
-    <style>
+    <style scoped>
         .wrapper {
-            margin: 2em;
+            clear: both;
         }
     </style>
 </pagelist>
