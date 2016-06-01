@@ -1,5 +1,6 @@
 
 import riot from 'riot';
+import './components/navigation.tag';
 import createForm from './views/create-form/create-form';
 import editForm from './views/create-form/edit-form';
 

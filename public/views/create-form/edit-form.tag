@@ -1,4 +1,5 @@
 <edit-form>
+    <navigation util={opts.util}></navigation>
 
     <div>
         <div class="content" id={getId()}></div>
