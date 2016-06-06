@@ -5,7 +5,8 @@ const FORMS_BASE = '/api/forms',
 
 export default {
 	form: {
-		post: saveForm
+		post: saveForm,
+		get: getForm
 	},
 	answers: {
 		get: getAnswers
@@ -32,7 +33,7 @@ function getForm(templateId) {
 	return new Promise((resolve, reject) => {
 		$.ajax({
 			method: 'GET',
-			url: `${FORMS_BASE}/${templateId}`
+			url: FORMS_BASE + (templateId ? '/' + templateId : '')
 		}).then(resolve, reject);
 	});
 }

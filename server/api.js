@@ -47,6 +47,19 @@ router
 			});
 	})
 
+	.get('/forms', function(req, res) {
+		db.select('name', 'created', 'id')
+		.from('survey_templates')
+		.where('name', '<>', '')
+		.then(result => {
+			_each(result, function(item) {
+				item.id = obfuscateId.encode(item.id);
+			});
+			res.status(200).send(result);
+		}, onError);
+
+	})
+
 	.get('/forms/answers/:id', function(req, res){
 		db.select(
 			'answers.name as name',  'value_text', 'answer_set'

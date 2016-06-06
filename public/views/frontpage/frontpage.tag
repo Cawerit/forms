@@ -4,15 +4,27 @@
             <h1>Luo sinunlaisiasi lomakkeita</h1>
         </div>
         <div class="card">
-            jotain juttuje
+            <h3>Päästä luovuutesi valloilleen</h3>
+            <p class="pitch">
+            Palvelumme tarjoaa joustavan mutta helppokäyttöisen alustan erilaisten kyselyjen
+            toteuttamiseksi.
+            </p>
+
+            <p>
+                <codesample></codesample>
+            </p>
+
         </div>
         <div class="card">
             <h3>Selaa muiden luomuksia</h3>
 
-            <ul>
-                
-
-
+            <ul class="list-group">
+                <li each={forms} class="list-group-item">
+                    <a href="" onclick={goTo.bind(null, id)}>
+                        <span>{name}</span>
+                        <span class="created-col">{created}</span>
+                    </a>
+                </li>
             </ul>
 
         </div>
@@ -31,8 +43,35 @@
             padding-bottom: 60%;
         }
 
+        .created-col {
+            float: right;
+        }
+
+        a {
+            color: #043659;
+        }
+
+        .pitch {
+            font-size: 115%;
+        }
 
     </style>
+
+
+    <script>
+
+        var self = this;
+        this.opts.forms.then(function(data) {
+            self.forms = data;
+            self.update();
+        });
+
+
+        goTo(id) {
+            location.assign('/forms/' + id);
+        }
+
+    </script>
 
 
 
