@@ -5,7 +5,9 @@ const FORMS_BASE = '/api/forms',
 
 export default {
 	form: {
-		post: saveForm
+		post: saveForm,
+		get: getForm,
+		getInfo: getFormInfo
 	},
 	answers: {
 		get: getAnswers
@@ -28,23 +30,35 @@ function getAnswers(surveyId) {
 	});
 }
 
+function getFormInfo(formId) {
+	return new Promise((resolve, reject) => {
+		$.ajax({
+			method: 'GET',
+			url: FORMS_BASE + '/' + formId + '/info'
+		}).then(resolve, reject);
+	});
+}
+
 function getForm(templateId) {
 	return new Promise((resolve, reject) => {
 		$.ajax({
 			method: 'GET',
-			url: `${FORMS_BASE}/${templateId}`
+			url: FORMS_BASE + (templateId ? '/' + templateId : '')
 		}).then(resolve, reject);
 	});
 }
 
 
-function saveForm(template){
+function saveForm({name, template}){
 	return new Promise((resolve, reject) => {
 		$.ajax({
 			method: 'POST',
 			url: FORMS_BASE,
-			contentType: 'application/json',
-			dataType: 'json'
+			contentType: 'application/json; charset=utf-8',
+			dataType: 'json',
+			data: JSON.stringify({
+				name
+			})
 		}).then(result => {
 			var id = result.id;
 			return editForm(id, template)

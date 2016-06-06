@@ -15,9 +15,6 @@ var express     = require('express'),
 	buildInfo   = require('./build.info.json'),
 	router	    = express.Router();
 
-const frontPage = `This is the surveys front page.
-Open <a href="forms/${obfuscateId.encode(1)}">a survey</a> to see content.`;
-
 const mainApp =
 	(req, res) => res.status(200).sendFile(path.join(global.root.dirname, 'public', 'index.html'));
 
@@ -25,9 +22,10 @@ registerIdParam(router);
 
 router
 	.use('/api', api)
-	.get('/', (req, res) => res.send(frontPage))
+	.get('/', mainApp)
 	.use('/node_modules', express.static(getAbsolute('node_modules')))
 	.use('/public', express.static(getAbsolute('public')))
+	.use('/assets', express.static(getAbsolute('assets')))
 
 	
 	/////////////////
@@ -85,6 +83,7 @@ function sendForm(res, options, editing) {
 		}, err => {
 			console.log(err);
 			res.status(500).send('Internal Server Error');
+			templates.saveError(templateName);
 		});
 }
 

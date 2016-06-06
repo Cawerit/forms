@@ -21,7 +21,9 @@ $(function () {
 			dataType: 'json',
 			contentType: 'application/json; charset=utf-8',
 			success: function(result){
-				console.log('woo', result);
+				$('.alert-success').fadeIn(1000, function(){
+					$('.alert-success').fadeOut(3000);
+				});
 			}
 		});
 

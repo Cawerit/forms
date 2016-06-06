@@ -28,7 +28,7 @@ router
 
 	.post('/forms', function(req, res) {
 		db.insert({
-
+			name: (req.body.name || '') + '' 
 		}, 'id')
 			.into('surveys')
 			.then(function (rows) {
@@ -47,9 +47,22 @@ router
 			});
 	})
 
+	.get('/forms', function(req, res) {
+		db.select('name', 'created', 'id')
+		.from('survey_templates')
+		.where('name', '<>', '')
+		.then(result => {
+			_each(result, function(item) {
+				item.id = obfuscateId.encode(item.id);
+			});
+			res.status(200).send(result);
+		}, onError);
+
+	})
+
 	.get('/forms/answers/:id', function(req, res){
 		db.select(
-			'answers.name as name',  'value_text', 'answer_set'
+			'answers.name as name',  'value_text', 'answer_set', 'surveys.name as survey_name'
 		).from('answers')
 			.join('answer_sets', 'answer_sets.id', 'answers.answer_set')
 			.join('templates', 'templates.id', 'answer_sets.template')
@@ -58,6 +71,12 @@ router
 			.then(function(result){
 				res.status(200).send(result);
 			}, err => res.status(500).send({ error: 'Internal Server Error' }));
+	})
+
+	.get('/forms/:id/info', function(req, res) {
+		db.select('name').from('surveys').where({
+			id: req.id + ''
+		}).then(data => res.status(200).send(data), onError);
 	})
 		
 	.get('/forms/:id', function(req, res) {
