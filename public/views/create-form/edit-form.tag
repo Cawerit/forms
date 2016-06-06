@@ -1,5 +1,4 @@
 <edit-form>
-
     <div>
         <div class="content" id={getId()}></div>
         <button onclick={save}>Tallenna</button>

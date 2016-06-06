@@ -2,8 +2,9 @@ var express         = require('express'),
 	path            = require('path'),
 	db              = global.root.require('db.js'),
 	inputParser     = global.root.require('shared/form-input-parser'),
+	knex			= require('knex'),
 	fs              = require('fs'),
-	_each            = require('lodash/each'),
+	_each           = require('lodash/each'),
 	busboy          = require('connect-busboy'),
 	bodyParser      = require('body-parser'),
 	cheerio         = require('cheerio'),
@@ -44,6 +45,19 @@ router
 				console.log(err);
 				res.status(500).send({ error: 'Internal Server Error' });
 			});
+	})
+
+	.get('/forms/answers/:id', function(req, res){
+		db.select(
+			'answers.name as name',  'value_text', 'answer_set'
+		).from('answers')
+			.join('answer_sets', 'answer_sets.id', 'answers.answer_set')
+			.join('templates', 'templates.id', 'answer_sets.template')
+			.join('surveys', 'surveys.id', 'templates.survey')
+			.where('surveys.id', (req.id + ''))
+			.then(function(result){
+				res.status(200).send(result);
+			}, err => res.status(500).send({ error: 'Internal Server Error' }));
 	})
 		
 	.get('/forms/:id', function(req, res) {
@@ -120,7 +134,8 @@ router
 		})
 		.then(function (template) {
 
-			var $ = cheerio.load(template),
+			var body = template.Body.toString('utf-8'),
+				$ = cheerio.load(body),
 				inputs = inputParser($('survey'), $);
 
 			//TODO: Validate inputs here...
@@ -145,7 +160,8 @@ router
 					inserts.push(obj);
 				});
 
-				db.insert(inserts).into('answers').then(function(){
+				db.insert(inserts).into('answers').then(function(result){
+					console.log('INSERTED', inserts);
 					res.status(201).send(inserts);
 				});
 

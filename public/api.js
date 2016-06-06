@@ -7,6 +7,9 @@ export default {
 	form: {
 		post: saveForm
 	},
+	answers: {
+		get: getAnswers
+	},
 	template: {
 		post: editForm,
 		get: getForm
@@ -15,6 +18,15 @@ export default {
 		COULD_NOT_PARSE_RESPONSE : COULD_NOT_PARSE_RESPONSE_ERROR
 	}
 };
+
+function getAnswers(surveyId) {
+	return new Promise((resolve, reject) => {
+		$.ajax({
+			method: 'GET',
+			url: `${FORMS_BASE}/answers/${surveyId}`
+		}).then(resolve, reject);
+	});
+}
 
 function getForm(templateId) {
 	return new Promise((resolve, reject) => {

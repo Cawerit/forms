@@ -2,6 +2,7 @@
 
 module.exports = function($form, $) {
 	var result = {};
+	console.log('input parser', $form.html());
 	$form.find('input, select').each(function () {
 		var $el = $(this),
 			selector, name;
