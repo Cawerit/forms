@@ -1,15 +1,18 @@
 <navigation>
     <div class="topbar">
-        <a href="/" class="glyphicon glyphicon-home" title="Etusivu"></a>
+        <a href="" onclick={goToHome.bind(this)} class="glyphicon glyphicon-home" title="Etusivu"></a>
         <a href="" onclick={goToView.bind(this)} class="glyphicon glyphicon-list-alt" title="Vastaa"></a>
-        <a href="" onclick={goToEdit()} class="glyphicon glyphicon-pencil" title="Muokkaa"></a>
+        <a href="" onclick={goToEdit.bind(this)} class="glyphicon glyphicon-pencil" title="Muokkaa"></a>
     </div>
 
     <script>
 
+        goToHome() {
+            location.replace(location.href.replace('/edit', ''));
+        }
+
         goToEdit() {
-            riot.route(currentRoute.collection + '/' + currentRoute.id + '/edit');
-            //riot.mount('*');
+            riot.route('edit');
         }
 
         goToView() {
