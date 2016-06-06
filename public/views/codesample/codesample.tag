@@ -32,7 +32,7 @@
             var content = '';
 
 
-            editor.setTheme('ace/theme/pastel-on-dark');
+            editor.setTheme('ace/theme/tomorrow_night_bright');
             var session = editor.getSession().setMode('ace/mode/jsx');
 
         //Disable warning about scrolling 

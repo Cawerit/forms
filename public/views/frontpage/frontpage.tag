@@ -28,6 +28,12 @@
             </ul>
 
         </div>
+
+        <div class="card create-new">
+            <button class="btn" onclick={createNew} role="button">
+                <i class="glyphicon glyphicon-plus"></i>&nbsp; Luo uusi kysely
+            </button>
+        </div>
     </div>
 
 
@@ -55,6 +61,17 @@
             font-size: 115%;
         }
 
+        .create-new {
+            text-align: center;
+        }
+
+        .create-new > button {
+            color: white;
+            background-color: #4A8DBC;
+            text-align: center;
+            font-size: 150%;
+        }
+
     </style>
 
 
@@ -69,6 +86,10 @@
 
         goTo(id) {
             location.assign('/forms/' + id);
+        }
+
+        createNew() {
+            location.assign('/forms/create');
         }
 
     </script>

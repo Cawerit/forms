@@ -1,7 +1,8 @@
 <edit-form>
     <div>
         <div class="content" id={getId()}></div>
-        <button onclick={save}>Tallenna</button>
+        <iframe src={preview} class="preview"></iframe>
+        <button onclick={save} if={!opts.formId}>Tallenna</button>
     </div>
 
     <script>
@@ -22,11 +23,27 @@
                     editor.setValue(template);
                 });
             }
+
+            editor.on('change', _.debounce(change, 5000));
+
+
+            function change() {
+                console.log('change');
+                if (vm.opts.formId) {
+                    vm.save().then(function(){
+                        vm.preview = '/forms/' + vm.opts.formId;
+                        vm.update();
+                        var iframe = $('iframe', vm.root);
+                        iframe.attr('src', iframe.attr('src'));
+                    });
+                }
+            }
+
         });
 
         save() {
             var content = this.editor.getValue();
-            if(this.opts.save) this.opts.save(content);
+            if(this.opts.save) return this.opts.save(content);
         }
 
         getId() {
@@ -36,9 +53,18 @@
     </script>
     <style scoped>
         .content {
-            width: 100%;
+            display: inline-block;
+            width: 45%;
             min-height: 500px;
+            margin-right: 5%;
             height: 90%;
+        }
+        .preview {
+            display: inline-block;
+            min-height: 500px;
+            width: 45%;
+            height: 90%;
+            border: 0;
         }
     </style>
 

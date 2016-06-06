@@ -82,6 +82,7 @@ function sendForm(res, options, editing) {
 		}, err => {
 			console.log(err);
 			res.status(500).send('Internal Server Error');
+			templates.saveError(templateName);
 		});
 }
 
