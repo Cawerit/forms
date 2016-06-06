@@ -7,12 +7,13 @@ export default function viewAnswers(id) {
     
     const content = api.answers.get(id+'')
         .then(function(result) {
-            result = _.groupBy(result, 'answer_set');
-            console.log(result);
-            return result;
+            var grouped = _.groupBy(result, 'answer_set');
+            return grouped;
         });
+
+    const formInfo = api.form.getInfo(id+'');
     
     
 
-    riot.mount('answers', { id, content });
+    riot.mount('answers', { id, content, formInfo });
 };

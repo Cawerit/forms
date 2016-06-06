@@ -25,6 +25,7 @@ router
 	.get('/', mainApp)
 	.use('/node_modules', express.static(getAbsolute('node_modules')))
 	.use('/public', express.static(getAbsolute('public')))
+	.use('/assets', express.static(getAbsolute('assets')))
 
 	
 	/////////////////

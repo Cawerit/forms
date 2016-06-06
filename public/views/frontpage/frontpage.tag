@@ -1,16 +1,25 @@
 <frontpage>
+    <div class="bg-wrap"></div>
     <div class="container">
         <div class="wrapper">
+            <i class="logo glyphicon glyphicon-question-sign"></i>
             <h1>Luo sinunlaisiasi lomakkeita</h1>
         </div>
         <div class="card">
             <h3>Päästä luovuutesi valloilleen</h3>
             <p class="pitch">
-            Palvelumme tarjoaa joustavan mutta helppokäyttöisen alustan erilaisten kyselyjen
-            toteuttamiseksi.
+            <p>
+            Luo ja muokkaa juuri sellaisia kyselyjä joita haluat, tai tarkastele muiden käyttäjien julkisia kyselyjä. 
+            <br>
+            Tarjoamme työkalut toteuttaa suunnitelmasi täydellisestä kyselystä juuri niin kuin haluat.
+            Kyselyn luonti onnistuu pienelläkin ohjelmoinnin osaamisella ja antaa täyden kontrollin sisältöön.
             </p>
 
             <p>
+            Ei rikkinäisiä suunnittelusovelluksia, ei odottamattomia tuloksia. Sinun ohjelmasi. Sinun asiakkaillesi.
+            </p>
+
+            <p class="space-before">
                 <codesample></codesample>
             </p>
 
@@ -39,14 +48,58 @@
 
 
     <style scoped>
+
+        p {
+            font-size: 17px;
+        }
+
+        .space-before {
+            margin-top: 40px;
+        }
+
+        h1 {
+            color: white;
+            font-weight: bold;
+            font-size: 60px;
+            text-align: center;
+            padding-bottom: 60px;
+            padding-top: 25%;
+        }
+
+        h3 {
+            font-weight: bold;
+        }
+
+        .bg-wrap {
+            z-index: 500;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background-image: url('/assets/background.jpg');
+        }
+        .container {
+            z-index: 1000;
+            position: absolute;
+            width: 100%;
+            padding: 0;
+
+        }
         .card {
             min-width: 100%;
+            display: block;
             padding: 50px;
+            margin: 0;
+            background-color: white;
+        }
+
+        .card:first-of-type {
+            -webkit-box-shadow: 0px 0px 106px 19px rgba(0,0,0,0.67);
+            -moz-box-shadow: 0px 0px 106px 19px rgba(0,0,0,0.67);
+            box-shadow: 0px 0px 106px 19px rgba(0,0,0,0.67);
         }
 
         .wrapper {
             padding-top: 50px;
-            padding-bottom: 60%;
         }
 
         .created-col {
@@ -70,6 +123,14 @@
             background-color: #4A8DBC;
             text-align: center;
             font-size: 150%;
+        }
+
+        .wrapper {
+            text-align: center;
+        }
+        .logo {
+            font-size: 200px;
+            color: #043659;
         }
 
     </style>
